@@ -8,4 +8,6 @@ To preview the site locally, simply open `index.html` in a browser. Once pushed 
 https://solve-coagulate.github.io/
 ```
 
+https://solve-coagulate.github.io/
+
 Feel free to check back for updates!
