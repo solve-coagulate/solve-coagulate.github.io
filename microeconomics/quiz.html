@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Microeconomics Quiz</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #f9f9f9; }
+    header { background: #333; color: white; padding: 10px 20px; }
+    main { max-width: 800px; margin: auto; }
+    .question { margin-bottom: 15px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Quiz</h1>
+  </header>
+  <main>
+    <div class="question">
+      <label>1. What happens to quantity demanded when price rises (all else equal)?</label><br>
+      <select id="q1">
+        <option value="">--Select--</option>
+        <option value="increase">It increases</option>
+        <option value="decrease">It decreases</option>
+        <option value="unchanged">It stays the same</option>
+      </select>
+    </div>
+    <div class="question">
+      <label>2. Which factor would shift the supply curve to the right?</label><br>
+      <select id="q2">
+        <option value="">--Select--</option>
+        <option value="higher_input">Higher input costs</option>
+        <option value="better_tech">Improved technology</option>
+        <option value="lower_producer">Lower number of producers</option>
+      </select>
+    </div>
+    <button onclick="gradeQuiz()">Submit</button>
+    <p id="result"></p>
+    <p><a href="index.html">Back to Guide</a></p>
+  </main>
+  <script>
+    function gradeQuiz() {
+      var score = 0;
+      if (document.getElementById('q1').value === 'decrease') score++;
+      if (document.getElementById('q2').value === 'better_tech') score++;
+      document.getElementById('result').innerText = 'You got ' + score + ' out of 2 correct.';
+    }
+  </script>
+</body>
+</html>
