@@ -1,5 +1,44 @@
-(()=>{
-  const APP_KEY='dietTracker';
+const APP_KEY = 'dietTracker';
+globalThis.myappdata = globalThis.myappdata || JSON.parse(typeof localStorage !== 'undefined' ? localStorage.getItem('myappdata') || '{}' : '{}');
+if (!globalThis.myappdata[APP_KEY]) globalThis.myappdata[APP_KEY] = {};
+
+const saved = globalThis.myappdata[APP_KEY];
+if (!saved.mruFoods) saved.mruFoods = [];
+const foodDB = saved.foodDB || {};
+const history = saved.history || {};
+saved.foodDB = foodDB;
+saved.history = history;
+
+let diaryEntries = [];
+let totals = {kj:0, protein:0, carbs:0, fat:0};
+
+const computeTotals = entries => entries.reduce((acc,e)=>({kj:acc.kj+e.kj,protein:acc.protein+e.protein,carbs:acc.carbs+e.carbs,fat:acc.fat+e.fat}),{kj:0,protein:0,carbs:0,fat:0});
+
+const updateMru = (list, name) => {
+  const newList = list.filter(n => n !== name);
+  newList.unshift(name);
+  return newList;
+};
+
+const persist = () => {
+  globalThis.myappdata[APP_KEY] = {foodDB, history, mruFoods: saved.mruFoods};
+  if (typeof localStorage !== 'undefined') {
+    localStorage.setItem('myappdata', JSON.stringify(globalThis.myappdata));
+  }
+};
+
+const scaleEntry = (food, amount) => {
+  const unitNum = parseFloat(food.unit) || 1;
+  const mult = amount / unitNum;
+  return {
+    kj: food.kj * mult,
+    protein: food.protein * mult,
+    carbs: food.carbs * mult,
+    fat: food.fat * mult
+  };
+};
+
+if (typeof document !== 'undefined') {
   // Use local timezone to get correct date
   const now = new Date();
   const tzOffset = now.getTimezoneOffset() * 60000;
@@ -9,45 +48,6 @@
   diaryDateInput.value = todayDate;
 
   const $ = id => document.getElementById(id);
-  window.myappdata = window.myappdata || JSON.parse(localStorage.getItem('myappdata')||'{}');
-  if (!myappdata[APP_KEY]) myappdata[APP_KEY] = {};
-
-  const saved = myappdata[APP_KEY];
-  // Most recently used foods
-  if (!saved.mruFoods) saved.mruFoods = [];
-  const foodDB = saved.foodDB || {};
-  const history = saved.history || {};
-  saved.foodDB = foodDB;
-  saved.history = history;
-
-  let diaryEntries = [];
-  let totals = {kj:0, protein:0, carbs:0, fat:0};
-
-  /* START EXPORTS */
-  const computeTotals = entries => entries.reduce((acc,e)=>({kj:acc.kj+e.kj,protein:acc.protein+e.protein,carbs:acc.carbs+e.carbs,fat:acc.fat+e.fat}),{kj:0,protein:0,carbs:0,fat:0});
-
-  const updateMru = (list, name) => {
-    const newList = list.filter(n => n !== name);
-    newList.unshift(name);
-    return newList;
-  };
-
-  const persist = () => {
-    // include MRU list in storage
-    myappdata[APP_KEY] = {foodDB, history, mruFoods: saved.mruFoods};
-    localStorage.setItem('myappdata', JSON.stringify(myappdata));
-  };
-
-  const scaleEntry = (food, amount) => {
-    const unitNum = parseFloat(food.unit) || 1;
-    const mult = amount / unitNum;
-    return {
-      kj: food.kj * mult,
-      protein: food.protein * mult,
-      carbs: food.carbs * mult,
-      fat: food.fat * mult
-    };
-  };
 
   const showNotification = message => {
     const n = document.createElement('div');
@@ -61,8 +61,7 @@
     }, 2000);
   };
 
-  if (typeof window !== 'undefined') window.DietTrackerExports = {computeTotals, updateMru, persist, scaleEntry};
-  /* END EXPORTS */
+  window.DietTrackerExports = {computeTotals, updateMru, persist, scaleEntry};
 
   const loadDiary = (date) => {
     const data = history[date];
@@ -270,4 +269,8 @@
     showNotification('Data imported successfully! Reloading...');
     location.reload();
   });
-})();
+}
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = { computeTotals, updateMru, persist, scaleEntry, foodDB, history, saved, myappdata: globalThis.myappdata, localStorage: globalThis.localStorage };
+}
