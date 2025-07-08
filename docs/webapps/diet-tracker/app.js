@@ -326,6 +326,7 @@ if (typeof document !== 'undefined') {
     $('amount').value = '';
     // update MRU list
     saved.mruFoods = updateMru(saved.mruFoods, name);
+    updateDatalist();
     // persist MRU update
     showNotification(`Added ${name} to diary`);
     persist();
