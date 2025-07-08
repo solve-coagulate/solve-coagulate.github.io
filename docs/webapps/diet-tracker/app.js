@@ -38,6 +38,17 @@
     localStorage.setItem('myappdata', JSON.stringify(myappdata));
   };
 
+  const scaleEntry = (food, amount) => {
+    const unitNum = parseFloat(food.unit) || 1;
+    const mult = amount / unitNum;
+    return {
+      kj: food.kj * mult,
+      protein: food.protein * mult,
+      carbs: food.carbs * mult,
+      fat: food.fat * mult
+    };
+  };
+
   const showNotification = message => {
     const n = document.createElement('div');
     n.className = 'notification';
@@ -50,7 +61,7 @@
     }, 2000);
   };
 
-  if (typeof window !== 'undefined') window.DietTrackerExports = {computeTotals, updateMru, persist};
+  if (typeof window !== 'undefined') window.DietTrackerExports = {computeTotals, updateMru, persist, scaleEntry};
   /* END EXPORTS */
 
   const loadDiary = (date) => {
@@ -174,10 +185,8 @@
     const name=$('diaryFood').value.trim(); const amt=parseFloat($('amount').value);
     if(!foodDB[name]){showNotification('Food not found in database');return;} if(!amt){showNotification('Please enter an amount');return;}
     const f=foodDB[name];
-    // determine scaling factor based on unit quantity
-    const unitNum = parseFloat(f.unit) || 1;
-    const mult = amt / unitNum;
-    const entry={food:name,amount:amt,kj:f.kj*mult,protein:f.protein*mult,carbs:f.carbs*mult,fat:f.fat*mult};
+    const scaled = scaleEntry(f, amt);
+    const entry={food:name,amount:amt,...scaled};
     diaryEntries.push(entry);
     totals = computeTotals(diaryEntries);
     renderDiaryTable(); renderTotals();
