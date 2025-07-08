@@ -28,8 +28,13 @@ const persist = () => {
 };
 
 const parseUnitNumber = unit => {
-  const nums = String(unit).match(/[0-9]*\.?[0-9]+/g);
-  if (nums && nums.length) return parseFloat(nums[0]);
+  if (unit == null) return 1;
+  const m = String(unit).trim().match(/[0-9.,]+/);
+  if (m) {
+    const cleaned = m[0].replace(/,/g, '');
+    const num = parseFloat(cleaned);
+    if (!isNaN(num)) return num;
+  }
   return 1;
 };
 
