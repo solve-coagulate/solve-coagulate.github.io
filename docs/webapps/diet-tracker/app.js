@@ -49,6 +49,101 @@ const scaleEntry = (food, amount) => {
   };
 };
 
+// Utility for DOM access when running in the browser
+const $ = id => (typeof document === 'undefined' ? null : document.getElementById(id));
+
+// Rebuild datalist options according to MRU order. Returns sorted names for tests.
+const updateDatalist = () => {
+  const entries = Object.keys(foodDB);
+  entries.sort((a, b) => {
+    const iA = saved.mruFoods.indexOf(a);
+    const iB = saved.mruFoods.indexOf(b);
+    if (iA !== -1 || iB !== -1) {
+      if (iA === -1) return 1;
+      if (iB === -1) return -1;
+      return iA - iB;
+    }
+    return a.localeCompare(b);
+  });
+  if (typeof document !== 'undefined') {
+    const dl = $('foodOptions');
+    if (dl) {
+      dl.innerHTML = '';
+      entries.forEach(name => {
+        const opt = document.createElement('option');
+        opt.value = name;
+        dl.appendChild(opt);
+      });
+    }
+  }
+  return entries;
+};
+
+// Create sorted history rows and render when DOM is available
+const renderHistoryTable = () => {
+  const rows = Object.entries(history)
+    .sort(([dateA], [dateB]) => dateB.localeCompare(dateA));
+  if (typeof document !== 'undefined') {
+    const tbody = $('historyTable')?.querySelector('tbody');
+    if (tbody) {
+      tbody.innerHTML = '';
+      rows.forEach(([date, data]) => {
+        const t = data.totals;
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${date}</td><td>${t.kj.toFixed(1)}</td><td>${t.protein.toFixed(1)}</td><td>${t.carbs.toFixed(1)}</td><td>${t.fat.toFixed(1)}</td>`;
+        tbody.appendChild(tr);
+      });
+    }
+  }
+  return rows;
+};
+
+const renderTotals = () => {
+  if (typeof document !== 'undefined') {
+    $('totalKj').textContent = totals.kj.toFixed(1);
+    $('totalProtein').textContent = totals.protein.toFixed(1);
+    $('totalCarbs').textContent = totals.carbs.toFixed(1);
+    $('totalFat').textContent = totals.fat.toFixed(1);
+  }
+};
+
+const renderDiaryTable = () => {
+  if (typeof document !== 'undefined') {
+    const tbody = $('diaryTable').querySelector('tbody');
+    tbody.innerHTML='';
+    diaryEntries.forEach((e, i)=>{
+      const tr=document.createElement('tr');
+      tr.innerHTML = `<td>${e.food}</td><td>${e.amount}</td><td>${e.kj.toFixed(1)}</td><td>${e.protein.toFixed(1)}</td><td>${e.carbs.toFixed(1)}</td><td>${e.fat.toFixed(1)}</td><td><button class="del-btn" data-index="${i}">X</button></td>`;
+      tbody.appendChild(tr);
+    });
+  }
+};
+
+const loadDiary = (date) => {
+  const data = history[date];
+  diaryEntries = data ? [...data.entries] : [];
+  totals = computeTotals(diaryEntries);
+  renderDiaryTable();
+  renderTotals();
+  return { diaryEntries, totals };
+};
+
+const exportData = () => (typeof localStorage === 'undefined' ? '' : (localStorage.getItem('myappdata') || ''));
+
+const importData = text => {
+  if (!text) throw new Error('No data to import');
+  let parsedFull;
+  try {
+    parsedFull = JSON.parse(text);
+  } catch (e) {
+    throw new Error('Invalid JSON format');
+  }
+  const newData = parsedFull[APP_KEY] || {};
+  const currentFull = JSON.parse(localStorage.getItem('myappdata') || '{}');
+  currentFull[APP_KEY] = newData;
+  localStorage.setItem('myappdata', JSON.stringify(currentFull));
+};
+
 if (typeof document !== 'undefined') {
   // Use local timezone to get correct date
   const now = new Date();
@@ -72,7 +167,17 @@ if (typeof document !== 'undefined') {
     }, 2000);
   };
 
-  window.DietTrackerExports = {computeTotals, updateMru, persist, scaleEntry};
+  window.DietTrackerExports = {
+    computeTotals,
+    updateMru,
+    persist,
+    scaleEntry,
+    updateDatalist,
+    renderHistoryTable,
+    loadDiary,
+    exportData,
+    importData
+  };
 
   const loadDiary = (date) => {
     const data = history[date];
@@ -257,31 +362,39 @@ if (typeof document !== 'undefined') {
   loadDiary(todayDate);
   // Data export button
   $('exportBtn')?.addEventListener('click', () => {
-    const data = localStorage.getItem('myappdata') || '';
+    const data = exportData();
     $('dataBox').value = data;
     showNotification('Data exported to text box');
   });
   // Data import button
   $('importBtn')?.addEventListener('click', () => {
     const text = $('dataBox').value.trim();
-    if (!text) { showNotification('No data to import'); return; }
-    let parsedFull;
     try {
-      parsedFull = JSON.parse(text);
+      importData(text);
     } catch(e) {
-      showNotification('Invalid JSON format');
+      showNotification(e.message);
       return;
     }
-    const newData = parsedFull[APP_KEY] || {};
-    // merge into existing storage
-    const currentFull = JSON.parse(localStorage.getItem('myappdata') || '{}');
-    currentFull[APP_KEY] = newData;
-    localStorage.setItem('myappdata', JSON.stringify(currentFull));
     showNotification('Data imported successfully! Reloading...');
     location.reload();
   });
 }
 
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { computeTotals, updateMru, persist, scaleEntry, foodDB, history, saved, myappdata: globalThis.myappdata, localStorage: globalThis.localStorage };
+  module.exports = {
+    computeTotals,
+    updateMru,
+    persist,
+    scaleEntry,
+    loadDiary,
+    updateDatalist,
+    renderHistoryTable,
+    exportData,
+    importData,
+    foodDB,
+    history,
+    saved,
+    myappdata: globalThis.myappdata,
+    localStorage: globalThis.localStorage
+  };
 }

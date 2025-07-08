@@ -1,0 +1,11 @@
+const assert = require('assert');
+const loadExports = require('./helpers');
+const { exportData, importData, localStorage, myappdata } = loadExports();
+myappdata.dietTracker = { foodDB:{}, history:{}, mruFoods:[] };
+localStorage.setItem('myappdata', JSON.stringify(myappdata));
+const exp = exportData();
+assert.strictEqual(exp, JSON.stringify(myappdata));
+const newData = { dietTracker: { foodDB:{apple:{kj:1}}, history:{}, mruFoods:[] } };
+importData(JSON.stringify(newData));
+assert.deepStrictEqual(JSON.parse(localStorage.getItem('myappdata')), newData);
+console.log('import/export tests passed');
