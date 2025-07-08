@@ -7,3 +7,5 @@
 - Basic unit tests for the diet tracker live under
   `docs/webapps/diet-tracker/tests/` and can be run with `npm test` (2025-07).
 
+- Network access allowed; npm packages like jsdom can be installed (2025-07).
+  DOM-based tests now use jsdom to load the diet tracker page (2025-07).

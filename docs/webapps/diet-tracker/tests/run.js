@@ -11,4 +11,5 @@ require('./renderTotals.test');
 require('./renderDiaryTable.test');
 require('./escapeFoodName.test');
 require('./importExport.test');
+require('./domButton.test')();
 console.log('All tests passed');
