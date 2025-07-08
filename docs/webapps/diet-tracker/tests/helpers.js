@@ -22,6 +22,6 @@ module.exports = function loadExports() {
     module: { exports: {} }
   };
   vm.createContext(context);
-  vm.runInContext(code + '\nthis.computeTotals = computeTotals;\nthis.updateMru = updateMru;\nthis.persist = persist;', context);
+  vm.runInContext(code + '\nthis.computeTotals = computeTotals;\nthis.updateMru = updateMru;\nthis.persist = persist;\nthis.scaleEntry = scaleEntry;', context);
   return context;
 };
