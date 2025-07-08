@@ -3,9 +3,9 @@ const path = require('path');
 const vm = require('vm');
 
 module.exports = function loadExports() {
-  const htmlPath = path.join(__dirname, '../index.html');
-  const html = fs.readFileSync(htmlPath, 'utf8');
-  const match = html.match(/\/\* START EXPORTS \*\/[\s\S]*?\/\* END EXPORTS \*\//);
+  const jsPath = path.join(__dirname, '../app.js');
+  const js = fs.readFileSync(jsPath, 'utf8');
+  const match = js.match(/\/\* START EXPORTS \*\/[\s\S]*?\/\* END EXPORTS \*\//);
   if (!match) throw new Error('Export section not found');
   const code = match[0].replace(/\/\* START EXPORTS \*\//, '').replace(/\/\* END EXPORTS \*\//, '');
   const context = {
