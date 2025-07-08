@@ -30,12 +30,20 @@ const persist = () => {
 const parseUnitNumber = unit => {
   if (unit == null) return 1;
   const m = String(unit).trim().match(/[0-9.,]+/);
-  if (m) {
-    const cleaned = m[0].replace(/,/g, '');
-    const num = parseFloat(cleaned);
-    if (!isNaN(num)) return num;
+  if (!m) return 1;
+  let str = m[0];
+  if (str.includes(',') && !str.includes('.')) {
+    const parts = str.split(',');
+    if (parts.length === 2 && parts[1].length !== 3) {
+      str = parts[0] + '.' + parts[1];
+    } else {
+      str = str.replace(/,/g, '');
+    }
+  } else {
+    str = str.replace(/,/g, '');
   }
-  return 1;
+  const num = parseFloat(str);
+  return isNaN(num) ? 1 : num;
 };
 
 const scaleEntry = (food, amount) => {
@@ -347,6 +355,7 @@ if (typeof module !== 'undefined' && module.exports) {
     renderHistoryTable,
     exportData,
     importData,
+    parseUnitNumber,
     foodDB,
     history,
     saved,
