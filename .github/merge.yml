@@ -1,0 +1,7 @@
+merge_queue:
+  # Run diet tracker tests before merging
+  tasks:
+    - name: diet-tracker-tests
+      run: |
+        npm ci
+        npm test
