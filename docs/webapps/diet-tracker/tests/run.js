@@ -8,5 +8,6 @@ require('./updateDatalist.test');
 require('./loadDiary.test');
 require('./renderTotals.test');
 require('./renderDiaryTable.test');
+require('./escapeFoodName.test');
 require('./importExport.test');
 console.log('All tests passed');
