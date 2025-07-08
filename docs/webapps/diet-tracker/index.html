@@ -8,73 +8,130 @@
 </head>
 <body>
   <div class="container">
-    <h1>Diet Tracker</h1>
-    <div class="tabs">
-      <button data-target="diaryPage" class="tabBtn active">Diary</button>
-      <button data-target="foodPage" class="tabBtn">Food List</button>
-      <button data-target="historyPage" class="tabBtn">History</button>
-      <button data-target="dataPage" class="tabBtn">Data</button>
+    <div class="header">
+      <h1>Diet Tracker</h1>
+      <p>Track your nutrition with style</p>
     </div>
-
+    <div class="tabs">
+      <button data-target="diaryPage" class="tabBtn active">📊 Diary</button>
+      <button data-target="foodPage" class="tabBtn">🍎 Foods</button>
+      <button data-target="historyPage" class="tabBtn">📈 History</button>
+      <button data-target="dataPage" class="tabBtn">💾 Data</button>
+    </div>
     <!-- Diary Page -->
     <div id="diaryPage" class="page active">
-      <h2>Diary for <input type="date" id="diaryDate" /></h2>
-      <div>
-        <input id="diaryFood" list="foodOptions" placeholder="Food name" />
-        <datalist id="foodOptions"></datalist>
-        <input id="amount" type="number" placeholder="Amount (g or unit)" />
-        <button id="addDiaryBtn">Add to Diary</button>
+      <div class="section-title">Today's Nutrition</div>
+      <div class="form-group">
+        <label for="diaryDate">Select Date:</label>
+        <input type="date" id="diaryDate" />
       </div>
-      <table id="diaryTable">
-        <thead>
-          <tr><th>Food</th><th>Amt</th><th>kJ</th><th>Protein</th><th>Carbs</th><th>Fat</th><th>Delete</th></tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-      <div class="totals" id="totals">Total: kJ 0 | Protein 0g | Carbs 0g | Fat 0g</div>
-      <button id="saveDayBtn">Save Day</button>
+      <div class="diary-input">
+        <div class="form-group">
+          <label for="diaryFood">Food:</label>
+          <input id="diaryFood" list="foodOptions" placeholder="Start typing food name..." />
+          <datalist id="foodOptions"></datalist>
+        </div>
+        <div class="form-group">
+          <label for="amount">Amount:</label>
+          <input id="amount" type="number" placeholder="Amount (g)" />
+        </div>
+        <button id="addDiaryBtn" class="btn btn-primary">Add Food</button>
+      </div>
+      <div class="table-container">
+        <table id="diaryTable">
+          <thead>
+            <tr><th>Food</th><th>Amount</th><th>kJ</th><th>Protein</th><th>Carbs</th><th>Fat</th><th>Action</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div class="totals" id="totals">
+        <div>Daily Totals</div>
+        <div class="totals-grid">
+          <div class="total-item">
+            <span class="total-value" id="totalKj">0</span>
+            <div class="total-label">kJ</div>
+          </div>
+          <div class="total-item">
+            <span class="total-value" id="totalProtein">0</span>
+            <div class="total-label">Protein (g)</div>
+          </div>
+          <div class="total-item">
+            <span class="total-value" id="totalCarbs">0</span>
+            <div class="total-label">Carbs (g)</div>
+          </div>
+          <div class="total-item">
+            <span class="total-value" id="totalFat">0</span>
+            <div class="total-label">Fat (g)</div>
+          </div>
+        </div>
+      </div>
+      <button id="saveDayBtn" class="btn btn-success pulse">💾 Save Day</button>
     </div>
-
     <!-- Food Page -->
     <div id="foodPage" class="page">
-      <h2>Food Database</h2>
-      <form id="foodForm">
-        <input id="foodName" placeholder="Food name" required />
-        <input id="unit" placeholder="Unit (e.g. 100g, 1 cup)" />
-        <input id="kj" type="number" placeholder="Kilojoules (kJ) per unit" />
-        <input id="protein" type="number" placeholder="Protein (g) per unit" />
-        <input id="carbs" type="number" placeholder="Carbs (g) per unit" />
-        <input id="fat" type="number" placeholder="Fat (g) per unit" />
-        <button id="addFoodBtn" type="button">Add / Update Food</button>
-      </form>
-      <table id="foodTable">
-        <thead>
-          <tr><th>Name</th><th>Unit</th><th>kJ</th><th>Protein</th><th>Carbs</th><th>Fat</th><th>Delete</th></tr>
-        </thead>
-        <tbody></tbody>
-      </table>
+      <div class="section-title">Food Database</div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="foodName">Food Name:</label>
+          <input id="foodName" placeholder="e.g., Chicken Breast" required />
+        </div>
+        <div class="form-group">
+          <label for="unit">Unit:</label>
+          <input id="unit" placeholder="e.g., 100g, 1 cup" />
+        </div>
+        <div class="form-group">
+          <label for="kj">Energy (kJ):</label>
+          <input id="kj" type="number" placeholder="Energy per unit" />
+        </div>
+        <div class="form-group">
+          <label for="protein">Protein (g):</label>
+          <input id="protein" type="number" placeholder="Protein per unit" />
+        </div>
+        <div class="form-group">
+          <label for="carbs">Carbs (g):</label>
+          <input id="carbs" type="number" placeholder="Carbs per unit" />
+        </div>
+        <div class="form-group">
+          <label for="fat">Fat (g):</label>
+          <input id="fat" type="number" placeholder="Fat per unit" />
+        </div>
+      </div>
+      <button id="addFoodBtn" class="btn btn-primary">Add / Update Food</button>
+      <div class="table-container">
+        <table id="foodTable">
+          <thead>
+            <tr><th>Name</th><th>Unit</th><th>kJ</th><th>Protein</th><th>Carbs</th><th>Fat</th><th>Action</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
     </div>
-
     <!-- History Page -->
     <div id="historyPage" class="page">
-      <h2>Saved Days</h2>
-      <table id="historyTable">
-        <thead>
-          <tr><th>Date</th><th>kJ</th><th>Protein</th><th>Carbs</th><th>Fat</th></tr>
-        </thead>
-        <tbody></tbody>
-      </table>
+      <div class="section-title">Nutrition History</div>
+      <div class="table-container">
+        <table id="historyTable">
+          <thead>
+            <tr><th>Date</th><th>kJ</th><th>Protein</th><th>Carbs</th><th>Fat</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
     </div>
-
     <!-- Data Page -->
     <div id="dataPage" class="page">
-      <h2>Data Import / Export</h2>
-      <textarea id="dataBox" rows="10" placeholder="Paste data here..."></textarea>
-      <button id="exportBtn">Export</button>
-      <button id="importBtn">Import</button>
+      <div class="section-title">Import / Export Data</div>
+      <div class="form-group">
+        <label for="dataBox">Data (JSON format):</label>
+        <textarea id="dataBox" rows="10" placeholder="Your data will appear here..."></textarea>
+      </div>
+      <div style="display:flex;gap:15px;margin-top:20px;">
+        <button id="exportBtn" class="btn btn-primary">📤 Export Data</button>
+        <button id="importBtn" class="btn btn-success">📥 Import Data</button>
+      </div>
     </div>
   </div>
-
-<script src="app.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
