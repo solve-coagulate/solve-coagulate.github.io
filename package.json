@@ -1,0 +1,16 @@
+{
+  "name": "solve-coagulate.github.io",
+  "version": "1.0.0",
+  "description": "This repository hosts my GitHub Pages site. All of the HTML lives in the `docs/` folder so the main branch stays tidy.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "node docs/webapps/diet-tracker/tests/run.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs"
+}
