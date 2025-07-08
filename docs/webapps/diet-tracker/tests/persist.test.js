@@ -1,26 +1,17 @@
 const assert = require('assert');
 
-// simple localStorage stub
-const fakeLocalStorage = (() => {
-  let data = {};
-  return {
-    setItem: (k, v) => { data[k] = v; },
-    getItem: k => data[k],
-    reset: () => { data = {}; }
-  };
-})();
+const loadExports = require('./helpers');
+const ctx = loadExports();
+const { persist, myappdata, localStorage } = ctx;
 
-const persist = (myappdata, {foodDB, history, mruFoods}) => {
-  myappdata['dietTracker'] = { foodDB, history, mruFoods };
-  fakeLocalStorage.setItem('myappdata', JSON.stringify(myappdata));
-};
+ctx.foodDB = { apple: {kj:100} };
+ctx.history = {};
+ctx.saved.mruFoods = ['apple'];
 
-const myappdata = {};
-const saved = { foodDB:{apple:{kj:100}}, history:{}, mruFoods:['apple'] };
+persist();
 
-persist(myappdata, saved);
-const stored = JSON.parse(fakeLocalStorage.getItem('myappdata'));
-assert.deepStrictEqual(stored.dietTracker.foodDB, saved.foodDB);
+const stored = JSON.parse(localStorage.getItem('myappdata'));
+assert.deepStrictEqual(stored.dietTracker.foodDB, ctx.foodDB);
 assert.deepStrictEqual(stored.dietTracker.mruFoods, ['apple']);
 
 console.log('persist tests passed');

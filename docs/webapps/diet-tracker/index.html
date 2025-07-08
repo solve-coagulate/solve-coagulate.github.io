@@ -116,13 +116,23 @@
   let diaryEntries = [];
   let totals = {kj:0, protein:0, carbs:0, fat:0};
 
+  /* START EXPORTS */
   const computeTotals = entries => entries.reduce((acc,e)=>({kj:acc.kj+e.kj,protein:acc.protein+e.protein,carbs:acc.carbs+e.carbs,fat:acc.fat+e.fat}),{kj:0,protein:0,carbs:0,fat:0});
+
+  const updateMru = (list, name) => {
+    const newList = list.filter(n => n !== name);
+    newList.unshift(name);
+    return newList;
+  };
 
   const persist = () => {
     // include MRU list in storage
     myappdata[APP_KEY] = {foodDB, history, mruFoods: saved.mruFoods};
     localStorage.setItem('myappdata', JSON.stringify(myappdata));
   };
+
+  if (typeof window !== 'undefined') window.DietTrackerExports = {computeTotals, updateMru, persist};
+  /* END EXPORTS */
 
   const loadDiary = (date) => {
     const data = history[date];
@@ -250,8 +260,7 @@
     $('diaryFood').value = '';
     $('amount').value = '';
     // update MRU list
-    saved.mruFoods = saved.mruFoods.filter(n => n !== name);
-    saved.mruFoods.unshift(name);
+    saved.mruFoods = updateMru(saved.mruFoods, name);
     // persist MRU update
     persist();
   });
