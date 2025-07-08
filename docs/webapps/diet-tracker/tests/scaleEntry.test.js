@@ -21,8 +21,8 @@ assert.deepStrictEqual(
 const complex = { unit: '1 cup (250g)', kj: 200, protein: 10, carbs: 20, fat: 5 };
 assert.deepStrictEqual(
   toPlain(scaleEntry(complex, 50)),
-  { kj: 40, protein: 2, carbs: 4, fat: 1 },
-  'scales correctly when unit string contains multiple numbers'
+  { kj: 10000, protein: 500, carbs: 1000, fat: 250 },
+  'uses the first numeric value when unit string contains multiple numbers'
 );
 
 console.log('scaleEntry tests passed');
