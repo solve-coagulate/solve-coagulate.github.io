@@ -8,6 +8,10 @@ const foodDB = saved.foodDB || {};
 const history = saved.history || {};
 saved.foodDB = foodDB;
 saved.history = history;
+// Ensure all foods have a unit; default to '100g' if missing
+Object.values(foodDB).forEach(f => {
+  if (!f.unit) f.unit = '100g';
+});
 
 let diaryEntries = [];
 let totals = {kj:0, protein:0, carbs:0, fat:0};
