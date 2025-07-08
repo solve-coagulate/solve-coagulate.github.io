@@ -5,5 +5,7 @@ require('./scaleEntry.test');
 require('./history.test');
 require('./updateDatalist.test');
 require('./loadDiary.test');
+require('./renderTotals.test');
+require('./renderDiaryTable.test');
 require('./importExport.test');
 console.log('All tests passed');
