@@ -32,23 +32,18 @@ global.document = {
   }
 };
 
-history['2025-07-02'] = {
-  entries: [
-    { food: 'apple', amount: 100, kj: 100, protein: 10, carbs: 20, fat: 5 },
-    { food: 'banana', amount: 50, kj: 50, protein: 5, carbs: 10, fat: 2 }
-  ],
-  totals: { kj: 150, protein: 15, carbs: 30, fat: 7 }
+const special = '<script>alert("x")</script>';
+history['2025-07-03'] = {
+  entries: [{ food: special, amount: 1, kj: 1, protein: 1, carbs: 1, fat: 1 }],
+  totals: { kj: 1, protein: 1, carbs: 1, fat: 1 }
 };
 
-loadDiary('2025-07-02');
+loadDiary('2025-07-03');
 tbody.children = [];
-tbody.innerHTML = '';
 renderDiaryTable();
 
-assert.strictEqual(tbody.children.length, 2);
-assert.strictEqual(tbody.children[0].children[0].textContent, 'apple');
-assert.strictEqual(tbody.children[1].children[0].textContent, 'banana');
+assert.strictEqual(tbody.children[0].children[0].textContent, special);
 
-console.log('renderDiaryTable tests passed');
+console.log('escapeFoodName tests passed');
 
 delete global.document;

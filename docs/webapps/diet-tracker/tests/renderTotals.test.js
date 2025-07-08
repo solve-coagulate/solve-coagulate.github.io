@@ -24,7 +24,9 @@ global.document = {
     if (id === 'diaryTable') return dummyTable;
     return elements[id] || {};
   },
-  createElement() { return {}; }
+  createElement(tag) {
+    return { dataset: {}, appendChild() {}, textContent: '', className: '', children: [], tagName: tag };
+  }
 };
 
 history['2025-07-01'] = {
