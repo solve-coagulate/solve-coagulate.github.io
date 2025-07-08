@@ -2,11 +2,11 @@ const assert = require('assert');
 
 const loadExports = require('./helpers');
 const ctx = loadExports();
-const { persist, myappdata, localStorage } = ctx;
+const { persist, myappdata, localStorage, foodDB, history, saved } = ctx;
 
-ctx.foodDB = { apple: {kj:100} };
-ctx.history = {};
-ctx.saved.mruFoods = ['apple'];
+Object.assign(foodDB, { apple: {kj:100} });
+Object.assign(history, {});
+saved.mruFoods = ['apple'];
 
 persist();
 
