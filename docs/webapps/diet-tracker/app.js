@@ -27,8 +27,14 @@ const persist = () => {
   }
 };
 
+const parseUnitNumber = unit => {
+  const nums = String(unit).match(/[0-9]*\.?[0-9]+/g);
+  if (nums && nums.length) return parseFloat(nums[0]);
+  return 1;
+};
+
 const scaleEntry = (food, amount) => {
-  const unitNum = parseFloat(food.unit) || 1;
+  const unitNum = parseUnitNumber(food.unit);
   const mult = amount / unitNum;
   return {
     kj: food.kj * mult,
