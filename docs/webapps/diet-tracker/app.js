@@ -173,52 +173,23 @@ if (typeof document !== 'undefined') {
     persist,
     scaleEntry,
     updateDatalist,
+    renderTotals,
+    renderDiaryTable,
     renderHistoryTable,
     loadDiary,
     exportData,
     importData
   };
 
-  const loadDiary = (date) => {
-    const data = history[date];
-    diaryEntries = data ? [...data.entries] : [];
-    totals = computeTotals(diaryEntries);
-    renderDiaryTable();
-    renderTotals();
-  };
+  // Expose helpers directly for debugging in browser consoles
+  window.renderTotals = renderTotals;
+  window.renderDiaryTable = renderDiaryTable;
+  window.renderHistoryTable = renderHistoryTable;
+  window.updateDatalist = updateDatalist;
 
   diaryDateInput.addEventListener('change',()=>{
     loadDiary(diaryDateInput.value);
   });
-
-  const updateDatalist = () => {
-    const dl = $('foodOptions');
-    dl.innerHTML = '';
-    // prepare sorted list same as food table MRU order
-    const entries = Object.keys(foodDB);
-    entries.sort((a, b) => {
-      const iA = saved.mruFoods.indexOf(a);
-      const iB = saved.mruFoods.indexOf(b);
-      if (iA !== -1 || iB !== -1) {
-        if (iA === -1) return 1;
-        if (iB === -1) return -1;
-        return iA - iB;
-      }
-      return a.localeCompare(b);
-    });
-    entries.forEach(name => {
-      const opt = document.createElement('option');
-      opt.value = name;
-      dl.appendChild(opt);
-    });
-  };
-
-  const renderTotals = () => {
-    $('totalKj').textContent = totals.kj.toFixed(1);
-    $('totalProtein').textContent = totals.protein.toFixed(1);
-    $('totalCarbs').textContent = totals.carbs.toFixed(1);
-    $('totalFat').textContent = totals.fat.toFixed(1);
-  };
 
   const renderFoodTable = () => {
     const tbody = $('foodTable').querySelector('tbody'); tbody.innerHTML='';
@@ -237,28 +208,7 @@ if (typeof document !== 'undefined') {
     });
   };
 
-  const renderDiaryTable = () => {
-    const tbody = $('diaryTable').querySelector('tbody'); tbody.innerHTML='';
-    diaryEntries.forEach((e, i)=>{
-      const tr=document.createElement('tr');
-      tr.innerHTML = `<td>${e.food}</td><td>${e.amount}</td><td>${e.kj.toFixed(1)}</td><td>${e.protein.toFixed(1)}</td><td>${e.carbs.toFixed(1)}</td><td>${e.fat.toFixed(1)}</td><td><button class="del-btn" data-index="${i}">X</button></td>`;
-      tbody.appendChild(tr);
-    });
-  };
 
-  const renderHistoryTable = () => {
-    const tbody = $('historyTable').querySelector('tbody');
-    tbody.innerHTML = '';
-    // Sort dates descending so most recent is first
-    Object.entries(history)
-      .sort(([dateA], [dateB]) => dateB.localeCompare(dateA))
-      .forEach(([date, data]) => {
-        const t = data.totals;
-        const tr = document.createElement('tr');
-        tr.innerHTML = `<td>${date}</td><td>${t.kj.toFixed(1)}</td><td>${t.protein.toFixed(1)}</td><td>${t.carbs.toFixed(1)}</td><td>${t.fat.toFixed(1)}</td>`;
-        tbody.appendChild(tr);
-      });
-  };
 
   $('addFoodBtn').addEventListener('click', () => {
     const name = $('foodName').value.trim();
@@ -272,7 +222,11 @@ if (typeof document !== 'undefined') {
     };
     persist();
     renderFoodTable(); updateDatalist();
-    document.getElementById('foodForm').reset();
+    // Clear fields after adding food
+    ['foodName','unit','kj','protein','carbs','fat'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = '';
+    });
     showNotification(`${name} added to database!`);
   });
 
@@ -387,6 +341,8 @@ if (typeof module !== 'undefined' && module.exports) {
     persist,
     scaleEntry,
     loadDiary,
+    renderTotals,
+    renderDiaryTable,
     updateDatalist,
     renderHistoryTable,
     exportData,
