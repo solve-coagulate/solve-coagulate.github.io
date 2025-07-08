@@ -38,6 +38,18 @@
     localStorage.setItem('myappdata', JSON.stringify(myappdata));
   };
 
+  const showNotification = message => {
+    const n = document.createElement('div');
+    n.className = 'notification';
+    n.textContent = message;
+    document.body.appendChild(n);
+    setTimeout(() => n.classList.add('show'), 100);
+    setTimeout(() => {
+      n.classList.remove('show');
+      setTimeout(() => document.body.removeChild(n), 300);
+    }, 2000);
+  };
+
   if (typeof window !== 'undefined') window.DietTrackerExports = {computeTotals, updateMru, persist};
   /* END EXPORTS */
 
@@ -76,7 +88,10 @@
   };
 
   const renderTotals = () => {
-    $('totals').textContent = `Total: kJ ${totals.kj.toFixed(1)} | Protein ${totals.protein.toFixed(1)}g | Carbs ${totals.carbs.toFixed(1)}g | Fat ${totals.fat.toFixed(1)}g`;
+    $('totalKj').textContent = totals.kj.toFixed(1);
+    $('totalProtein').textContent = totals.protein.toFixed(1);
+    $('totalCarbs').textContent = totals.carbs.toFixed(1);
+    $('totalFat').textContent = totals.fat.toFixed(1);
   };
 
   const renderFoodTable = () => {
@@ -121,7 +136,7 @@
 
   $('addFoodBtn').addEventListener('click', () => {
     const name = $('foodName').value.trim();
-    if (!name) return;
+    if (!name) { showNotification('Please enter a food name'); return; }
     foodDB[name] = {
       unit: $('unit').value.trim() || '100g',
       kj: parseFloat($('kj').value)||0,
@@ -132,6 +147,7 @@
     persist();
     renderFoodTable(); updateDatalist();
     document.getElementById('foodForm').reset();
+    showNotification(`${name} added to database!`);
   });
 
   $('foodTable').addEventListener('click', e => {
@@ -140,6 +156,7 @@
       delete foodDB[name];
       persist();
       renderFoodTable(); updateDatalist();
+      showNotification(`${name} deleted from database`);
     } else if (e.target.classList.contains('name-cell')) {
       const name = e.target.dataset.name;
       const f = foodDB[name];
@@ -149,12 +166,13 @@
       $('protein').value = f.protein;
       $('carbs').value = f.carbs;
       $('fat').value = f.fat;
+      showNotification(`Loaded ${name} for editing`);
     }
   });
 
   $('addDiaryBtn').addEventListener('click',()=>{
     const name=$('diaryFood').value.trim(); const amt=parseFloat($('amount').value);
-    if(!foodDB[name]){alert('Food not in database');return;} if(!amt){alert('Enter amount');return;}
+    if(!foodDB[name]){showNotification('Food not found in database');return;} if(!amt){showNotification('Please enter an amount');return;}
     const f=foodDB[name];
     // determine scaling factor based on unit quantity
     const unitNum = parseFloat(f.unit) || 1;
@@ -169,6 +187,7 @@
     // update MRU list
     saved.mruFoods = updateMru(saved.mruFoods, name);
     // persist MRU update
+    showNotification(`Added ${name} to diary`);
     persist();
   });
 
@@ -177,9 +196,11 @@
     if (e.target.classList.contains('del-btn')) {
       const idx = parseInt(e.target.dataset.index);
       if (!isNaN(idx)) {
+        const foodName = diaryEntries[idx].food;
         diaryEntries.splice(idx, 1);
         totals = computeTotals(diaryEntries);
         renderDiaryTable(); renderTotals();
+        showNotification(`Removed ${foodName} from diary`);
         persist();
       }
     }
@@ -188,11 +209,11 @@
   // Save day listener
   $('saveDayBtn').addEventListener('click', () => {
     const day = diaryDateInput.value;
-    if (diaryEntries.length === 0) { alert('No entries to save'); return; }
+    if (diaryEntries.length === 0) { showNotification('No entries to save'); return; }
     history[day] = { entries: [...diaryEntries], totals: { ...totals } };
     persist();
     renderHistoryTable();
-    alert('Day saved.');
+    showNotification('Day saved.');
   });
 
   document.querySelectorAll('.tabBtn').forEach(btn=>btn.addEventListener('click',()=>{
@@ -212,22 +233,24 @@
     loadDiary(date);
     // switch to Diary tab
     document.querySelector('.tabBtn[data-target="diaryPage"]').click();
+    showNotification(`Loaded diary for ${date}`);
   });
   loadDiary(todayDate);
   // Data export button
   $('exportBtn')?.addEventListener('click', () => {
     const data = localStorage.getItem('myappdata') || '';
     $('dataBox').value = data;
+    showNotification('Data exported to text box');
   });
   // Data import button
   $('importBtn')?.addEventListener('click', () => {
     const text = $('dataBox').value.trim();
-    if (!text) { alert('No data to import'); return; }
+    if (!text) { showNotification('No data to import'); return; }
     let parsedFull;
     try {
       parsedFull = JSON.parse(text);
     } catch(e) {
-      alert('Invalid JSON');
+      showNotification('Invalid JSON format');
       return;
     }
     const newData = parsedFull[APP_KEY] || {};
@@ -235,7 +258,7 @@
     const currentFull = JSON.parse(localStorage.getItem('myappdata') || '{}');
     currentFull[APP_KEY] = newData;
     localStorage.setItem('myappdata', JSON.stringify(currentFull));
-    alert('Diet Tracker data imported. Reloading...');
+    showNotification('Data imported successfully! Reloading...');
     location.reload();
   });
 })();
