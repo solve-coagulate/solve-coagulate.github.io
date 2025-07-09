@@ -697,6 +697,34 @@
       }
     }
 
+    // Compute moving averages using historical data
+    function avgWithHistory(dateArr, rawData, n) {
+      const result = [];
+      for (const dateStr of dateArr) {
+        let sum = 0;
+        for (let offset = 0; offset < n; offset++) {
+          const parts = dateStr.split('-');
+          const d = new Date(
+            parseInt(parts[0]),
+            parseInt(parts[1]) - 1,
+            parseInt(parts[2])
+          );
+          d.setDate(d.getDate() - offset);
+          const year = d.getFullYear();
+          const month = String(d.getMonth() + 1).padStart(2, '0');
+          const day = String(d.getDate()).padStart(2, '0');
+          const key = `${year}-${month}-${day}`;
+          const entry = rawData[key];
+          if (entry && typeof entry === 'object' && entry.exercised) {
+            sum += 1;
+          }
+        }
+        result.push(sum / n);
+      }
+      return result;
+    }
+    window.avgWithHistory = avgWithHistory;
+
     function drawChart() {
       if (typeof Chart === 'undefined') {
         console.error('Chart.js failed to load.');
@@ -739,20 +767,6 @@
 
       const data = parsed.map(e => e.exercised);
 
-      const avg = (arr, n) => {
-        const result = [];
-        for (let i = 0; i < arr.length; i++) {
-          let sum = 0;
-          let count = 0;
-          for (let j = i - n + 1; j <= i; j++) {
-            sum += j >= 0 ? arr[j] : 0;
-            count++;
-          }
-          result.push(sum / count);
-        }
-        return result;
-      };
-
       if (window.exerciseChart) {
         window.exerciseChart.destroy();
       }
@@ -778,7 +792,7 @@
             },
             {
               label: '7-Day Average',
-              data: avg(data, 7),
+              data: avgWithHistory(dates, raw, 7),
               borderColor: '#764ba2',
               borderDash: [5, 5],
               fill: false,
@@ -786,7 +800,7 @@
             },
             {
               label: '14-Day Average',
-              data: avg(data, 14),
+              data: avgWithHistory(dates, raw, 14),
               borderColor: '#e53e3e',
               borderDash: [8, 4],
               fill: false,
