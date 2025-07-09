@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Exercise Tracker</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+      color: #333;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(10px);
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 2.5rem;
+      font-weight: 700;
+      background: linear-gradient(45deg, #667eea, #764ba2);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 30px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 15px;
+      padding: 25px;
+      margin-bottom: 25px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .card h2 {
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+      color: #4a5568;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #4a5568;
+      font-size: 0.9rem;
+    }
+
+    input[type="date"] {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid #e2e8f0;
+      border-radius: 10px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      background: #f8fafc;
+    }
+
+    input[type="date"]:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      background: white;
+    }
+
+    textarea {
+      width: 100%;
+      padding: 16px;
+      border: 2px solid #e2e8f0;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      resize: vertical;
+      min-height: 120px;
+      transition: all 0.3s ease;
+      background: #f8fafc;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      background: white;
+    }
+
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .checkbox-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+
+    .checkbox-wrapper input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      appearance: none;
+      border: 2px solid #e2e8f0;
+      border-radius: 6px;
+      position: relative;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .checkbox-wrapper input[type="checkbox"]:checked {
+      background: #667eea;
+      border-color: #667eea;
+    }
+
+    .checkbox-wrapper input[type="checkbox"]:checked::after {
+      content: '✓';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: white;
+      font-weight: bold;
+      font-size: 12px;
+    }
+
+    .btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(45deg, #667eea, #764ba2);
+      color: white;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+    }
+
+    .btn-secondary {
+      background: #f7fafc;
+      color: #4a5568;
+      border: 2px solid #e2e8f0;
+    }
+
+    .btn-secondary:hover {
+      background: #edf2f7;
+      border-color: #cbd5e0;
+    }
+
+    .btn-danger {
+      background: #fed7d7;
+      color: #c53030;
+      border: 2px solid #feb2b2;
+    }
+
+    .btn-danger:hover {
+      background: #feb2b2;
+      border-color: #fc8181;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+
+    .chart-container {
+      position: relative;
+      height: 400px;
+      margin-bottom: 20px;
+    }
+
+    .toggle-section {
+      margin-bottom: 20px;
+    }
+
+    .collapsible-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+
+    .collapsible-content.expanded {
+      max-height: 500px;
+    }
+
+    .log-entry {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 15px;
+      transition: all 0.3s ease;
+    }
+
+    .log-entry:hover {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      transform: translateY(-1px);
+    }
+
+    .log-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .log-date {
+      font-weight: 700;
+      color: #667eea;
+      cursor: pointer;
+      font-size: 1.1rem;
+    }
+
+    .log-date:hover {
+      color: #764ba2;
+    }
+
+    .log-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.9rem;
+    }
+
+    .status-badge {
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .status-exercised {
+      background: #c6f6d5;
+      color: #2f855a;
+    }
+
+    .status-rest {
+      background: #fed7d7;
+      color: #c53030;
+    }
+
+    .log-content {
+      white-space: pre-wrap;
+      font-family: 'Courier New', monospace;
+      background: white;
+      padding: 15px;
+      border-radius: 8px;
+      border-left: 4px solid #667eea;
+      margin-top: 10px;
+    }
+
+    .toast {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 16px 24px;
+      border-radius: 10px;
+      color: white;
+      font-weight: 600;
+      z-index: 1000;
+      transform: translateX(100%);
+      transition: transform 0.3s ease;
+    }
+
+    .toast.show {
+      transform: translateX(0);
+    }
+
+    .toast-success {
+      background: linear-gradient(45deg, #48bb78, #38a169);
+    }
+
+    .toast-error {
+      background: linear-gradient(45deg, #f56565, #e53e3e);
+    }
+
+    .file-input-wrapper {
+      position: relative;
+      display: inline-block;
+      cursor: pointer;
+      overflow: hidden;
+    }
+
+    .file-input-wrapper input[type="file"] {
+      position: absolute;
+      left: -9999px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .stat-card {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 20px;
+      border-radius: 12px;
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 5px;
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      opacity: 0.9;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 20px;
+        margin: 10px;
+      }
+
+      h1 {
+        font-size: 2rem;
+      }
+
+      .button-group {
+        flex-direction: column;
+      }
+
+      .btn {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>💪 Exercise Tracker</h1>
+    
+    <div class="card">
+      <h2>📅 Log Today's Workout</h2>
+      <div class="form-group">
+        <label for="date">Date</label>
+        <input type="date" id="date" />
+      </div>
+      
+      <div class="form-group">
+        <label for="log">Workout Details</label>
+        <textarea id="log" placeholder="Example:&#10;• 5x5 Squats @ 20kg&#10;• 3x8 Bench Press @ 25kg&#10;• 10 minutes cardio"></textarea>
+      </div>
+      
+      <div class="checkbox-group">
+        <div class="checkbox-wrapper">
+          <input type="checkbox" id="exercised">
+          <label for="exercised">I exercised today</label>
+        </div>
+      </div>
+      
+      <button class="btn btn-primary" onclick="saveEntry()">
+        💾 Save Entry
+      </button>
+    </div>
+
+    <div class="card">
+      <h2>📊 Progress Overview</h2>
+      <div class="stats-grid" id="statsGrid">
+        <!-- Stats will be populated here -->
+      </div>
+      <div class="chart-container">
+        <canvas id="chart"></canvas>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="toggle-section">
+        <button class="btn btn-secondary" onclick="toggleImport()">
+          🔧 Import/Export Data
+        </button>
+        <div id="importSection" class="collapsible-content">
+          <div style="margin-top: 20px;">
+            <div class="form-group">
+              <label for="importData">Import/Export JSON Data</label>
+              <textarea id="importData" placeholder="Paste JSON data here to import..."></textarea>
+            </div>
+            
+            <div class="form-group">
+              <label>Upload File</label>
+              <div class="file-input-wrapper">
+                <input type="file" id="fileInput" accept=".json" />
+                <button class="btn btn-secondary" onclick="document.getElementById('fileInput').click()">📁 Choose File</button>
+              </div>
+            </div>
+            
+            <div class="button-group">
+              <button class="btn btn-primary" onclick="importFromText()">📥 Import</button>
+              <button class="btn btn-secondary" onclick="exportToTextbox()">📤 Export</button>
+              <button class="btn btn-secondary" onclick="downloadData()">💾 Download</button>
+              <button class="btn btn-danger" onclick="clearEntries()">🗑️ Clear All</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>📝 Workout History</h2>
+      <div id="output"></div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    // Set today's date by default (avoiding timezone issues)
+    function getTodayDateString() {
+      const today = new Date();
+      const year = today.getFullYear();
+      const month = String(today.getMonth() + 1).padStart(2, '0');
+      const day = String(today.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
+    
+    document.getElementById('date').value = getTodayDateString();
+
+    // Helper function to format date properly (avoiding timezone issues)
+    function formatDateForDisplay(dateString) {
+      const parts = dateString.split('-');
+      const year = parseInt(parts[0]);
+      const month = parseInt(parts[1]) - 1; // JavaScript months are 0-indexed
+      const day = parseInt(parts[2]);
+      
+      const date = new Date(year, month, day);
+      return date.toLocaleDateString('en-US', { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+      });
+    }
+
+    function showToast(message, type = 'success') {
+      const toast = document.createElement('div');
+      toast.className = `toast toast-${type}`;
+      toast.textContent = message;
+      document.body.appendChild(toast);
+      
+      setTimeout(() => toast.classList.add('show'), 100);
+      setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => document.body.removeChild(toast), 300);
+      }, 3000);
+    }
+
+    function saveEntry() {
+      const date = document.getElementById('date').value;
+      const log = document.getElementById('log').value;
+      const exercised = document.getElementById('exercised').checked;
+      
+      if (!date) {
+        showToast('Please select a date.', 'error');
+        return;
+      }
+      
+      let entries = JSON.parse(localStorage.getItem('exerciseLogs') || '{}');
+      entries[date] = { log, exercised };
+      localStorage.setItem('exerciseLogs', JSON.stringify(entries));
+      
+      loadEntries();
+      drawChart();
+      updateStats();
+      showToast('Entry saved successfully!');
+      
+      // Clear form and reset to today's date
+      document.getElementById('log').value = '';
+      document.getElementById('exercised').checked = false;
+      document.getElementById('date').value = getTodayDateString();
+    }
+
+    function loadEntries() {
+      const entries = JSON.parse(localStorage.getItem('exerciseLogs') || '{}');
+      const outputDiv = document.getElementById('output');
+      outputDiv.innerHTML = '';
+      
+      const sortedDates = Object.keys(entries).sort().reverse();
+      
+      if (sortedDates.length === 0) {
+        outputDiv.innerHTML = '<p style="text-align: center; color: #a0aec0; font-style: italic;">No workout entries yet. Start by logging your first workout!</p>';
+        return;
+      }
+      
+      sortedDates.forEach(date => {
+        let entry = entries[date];
+        if (typeof entry === 'string') {
+          entry = { log: entry, exercised: false };
+        }
+        
+        const entryDiv = document.createElement('div');
+        entryDiv.className = 'log-entry';
+
+        const headerDiv = document.createElement('div');
+        headerDiv.className = 'log-header';
+
+        const dateSpan = document.createElement('span');
+        dateSpan.className = 'log-date';
+        dateSpan.textContent = formatDateForDisplay(date);
+        dateSpan.onclick = () => editEntry(date);
+
+        const statusDiv = document.createElement('div');
+        statusDiv.className = 'log-status';
+        
+        const badge = document.createElement('span');
+        badge.className = `status-badge ${entry.exercised ? 'status-exercised' : 'status-rest'}`;
+        badge.textContent = entry.exercised ? 'Exercised' : 'Rest Day';
+        
+        statusDiv.appendChild(badge);
+        headerDiv.appendChild(dateSpan);
+        headerDiv.appendChild(statusDiv);
+        entryDiv.appendChild(headerDiv);
+
+        if (entry.log && entry.log.trim()) {
+          const contentDiv = document.createElement('div');
+          contentDiv.className = 'log-content';
+          contentDiv.textContent = entry.log;
+          entryDiv.appendChild(contentDiv);
+        }
+
+        outputDiv.appendChild(entryDiv);
+      });
+    }
+
+    function editEntry(date) {
+      const entries = JSON.parse(localStorage.getItem('exerciseLogs') || '{}');
+      let entry = entries[date];
+      if (typeof entry === 'string') {
+        entry = { log: entry, exercised: false };
+      }
+      if (entry) {
+        document.getElementById('date').value = date;
+        document.getElementById('log').value = entry.log || '';
+        document.getElementById('exercised').checked = entry.exercised || false;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        showToast('Entry loaded for editing');
+      }
+    }
+
+    function updateStats() {
+      const entries = JSON.parse(localStorage.getItem('exerciseLogs') || '{}');
+      const dates = Object.keys(entries);
+      const totalEntries = dates.length;
+      const exercisedDays = dates.filter(date => {
+        const entry = entries[date];
+        return (typeof entry === 'object' ? entry.exercised : false);
+      }).length;
+      
+      // Calculate success rate based on actual days (last 7 days)
+      const today = new Date();
+      const last7DaysActual = [];
+      for (let i = 0; i < 7; i++) {
+        const d = new Date(today);
+        d.setDate(today.getDate() - i);
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        last7DaysActual.push(`${year}-${month}-${day}`);
+      }
+      
+      const last7DaysExercised = last7DaysActual.filter(date => {
+        const entry = entries[date];
+        return entry && (typeof entry === 'object' ? entry.exercised : false);
+      }).length;
+      
+      const successRate = Math.round((last7DaysExercised / 7) * 100);
+      
+      const statsGrid = document.getElementById('statsGrid');
+      statsGrid.innerHTML = `
+        <div class="stat-card">
+          <div class="stat-value">${totalEntries}</div>
+          <div class="stat-label">Total Entries</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">${exercisedDays}</div>
+          <div class="stat-label">Workout Days</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">${last7DaysExercised}/7</div>
+          <div class="stat-label">Last 7 Days</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">${successRate}%</div>
+          <div class="stat-label">Success Rate</div>
+        </div>
+      `;
+    }
+
+    function toggleImport() {
+      const section = document.getElementById('importSection');
+      section.classList.toggle('expanded');
+    }
+
+    function importFromText() {
+      const text = document.getElementById('importData').value;
+      try {
+        const parsed = JSON.parse(text);
+        localStorage.setItem('exerciseLogs', JSON.stringify(parsed));
+        loadEntries();
+        drawChart();
+        updateStats();
+        showToast('Data imported successfully!');
+      } catch (e) {
+        showToast('Invalid JSON format. Please check your data.', 'error');
+      }
+    }
+
+    function exportToTextbox() {
+      const entries = localStorage.getItem('exerciseLogs') || '{}';
+      document.getElementById('importData').value = entries;
+      showToast('Data exported to text box');
+    }
+
+    function downloadData() {
+      const entries = localStorage.getItem('exerciseLogs');
+      const blob = new Blob([entries], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'exercise_log.json';
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast('Data downloaded successfully!');
+    }
+
+    function clearEntries() {
+      const clearBtn = document.querySelector('[onclick="clearEntries()"]');
+      if (clearBtn.dataset.confirm === 'true') {
+        localStorage.removeItem('exerciseLogs');
+        loadEntries();
+        drawChart();
+        updateStats();
+        clearBtn.innerHTML = '🗑️ Clear All';
+        delete clearBtn.dataset.confirm;
+        showToast('All entries cleared');
+      } else {
+        clearBtn.innerHTML = '❗ Click Again to Confirm';
+        clearBtn.dataset.confirm = 'true';
+        setTimeout(() => {
+          if (clearBtn.dataset.confirm === 'true') {
+            clearBtn.innerHTML = '🗑️ Clear All';
+            delete clearBtn.dataset.confirm;
+          }
+        }, 3000);
+      }
+    }
+
+    function drawChart() {
+      if (typeof Chart === 'undefined') {
+        console.error('Chart.js failed to load.');
+        return;
+      }
+      
+      const raw = JSON.parse(localStorage.getItem('exerciseLogs') || '{}');
+      const dates = [];
+      const today = new Date();
+      
+      for (let i = 13; i >= 0; i--) {
+        const d = new Date(today);
+        d.setDate(today.getDate() - i);
+        // Use local date formatting to avoid timezone issues
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        dates.push(`${year}-${month}-${day}`);
+      }
+
+      const parsed = dates.map(date => {
+        const value = typeof raw[date] === 'string' ? 
+          { log: raw[date], exercised: false } : 
+          raw[date] || { exercised: false };
+        return { date, exercised: value.exercised ? 1 : 0 };
+      });
+
+      const labels = parsed.map(e => {
+        const parts = e.date.split('-');
+        const year = parseInt(parts[0]);
+        const month = parseInt(parts[1]) - 1;
+        const day = parseInt(parts[2]);
+        const d = new Date(year, month, day);
+        return d.toLocaleDateString('en-US', { 
+          weekday: 'short', 
+          month: 'numeric', 
+          day: 'numeric' 
+        });
+      });
+
+      const data = parsed.map(e => e.exercised);
+
+      const avg = (arr, n) => {
+        const result = [];
+        for (let i = 0; i < arr.length; i++) {
+          let sum = 0;
+          let count = 0;
+          for (let j = i - n + 1; j <= i; j++) {
+            sum += j >= 0 ? arr[j] : 0;
+            count++;
+          }
+          result.push(sum / count);
+        }
+        return result;
+      };
+
+      if (window.exerciseChart) {
+        window.exerciseChart.destroy();
+      }
+      
+      const ctx = document.getElementById('chart').getContext('2d');
+      window.exerciseChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels,
+          datasets: [
+            {
+              label: 'Daily Workouts',
+              data,
+              borderColor: '#667eea',
+              backgroundColor: 'rgba(102, 126, 234, 0.1)',
+              fill: true,
+              tension: 0.4,
+              pointRadius: 6,
+              pointHoverRadius: 8,
+              pointBackgroundColor: '#667eea',
+              pointBorderColor: '#fff',
+              pointBorderWidth: 2,
+            },
+            {
+              label: '7-Day Average',
+              data: avg(data, 7),
+              borderColor: '#764ba2',
+              borderDash: [5, 5],
+              fill: false,
+              pointRadius: 0,
+            },
+            {
+              label: '14-Day Average',
+              data: avg(data, 14),
+              borderColor: '#e53e3e',
+              borderDash: [8, 4],
+              fill: false,
+              pointRadius: 0,
+            },
+            {
+              label: '5 Workouts/Week Target',
+              data: Array(data.length).fill(5 / 7),
+              borderColor: '#48bb78',
+              borderDash: [2, 4],
+              fill: false,
+              pointRadius: 0,
+            },
+            {
+              label: '4 Workouts/Week Target',
+              data: Array(data.length).fill(4 / 7),
+              borderColor: '#ed8936',
+              borderDash: [2, 4],
+              fill: false,
+              pointRadius: 0,
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { 
+              position: 'top',
+              labels: {
+                usePointStyle: true,
+                padding: 20,
+                font: { size: 12 }
+              }
+            },
+            title: { 
+              display: true, 
+              text: 'Workout Activity - Last 14 Days',
+              font: { size: 16, weight: 'bold' },
+              padding: 20
+            }
+          },
+          scales: {
+            y: { 
+              min: 0, 
+              max: 1.2, 
+              title: { 
+                display: true, 
+                text: 'Workout Frequency',
+                font: { size: 12, weight: 'bold' }
+              },
+              grid: { color: 'rgba(0,0,0,0.1)' }
+            },
+            x: {
+              grid: { 
+                color: 'rgba(0,0,0,0.1)' 
+              },
+              title: { 
+                display: true, 
+                text: 'Date',
+                font: { size: 12, weight: 'bold' }
+              }
+            }
+          },
+          interaction: {
+            intersect: false,
+            mode: 'index',
+          }
+        }
+      });
+    }
+
+    // File input handling
+    document.getElementById('fileInput').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          document.getElementById('importData').value = e.target.result;
+          showToast('File loaded successfully!');
+        };
+        reader.readAsText(file);
+      }
+    });
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      // Wait a bit to ensure Chart.js is fully loaded
+      setTimeout(() => {
+        loadEntries();
+        drawChart();
+        updateStats();
+      }, 100);
+    });
+  </script>
+</body>
+</html>
