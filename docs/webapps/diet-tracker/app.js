@@ -139,9 +139,9 @@ const renderDiaryTable = () => {
       fatTd.textContent=e.fat.toFixed(1);
       const actionTd=document.createElement('td');
       const btn=document.createElement('button');
-      btn.className='del-btn';
+      btn.className='btn btn-danger del-btn';
       btn.dataset.index=i;
-      btn.textContent='X';
+      btn.textContent='🗑 Delete';
       actionTd.appendChild(btn);
       tr.appendChild(foodTd);
       tr.appendChild(amtTd);
@@ -255,9 +255,9 @@ if (typeof document !== 'undefined') {
       fatTd.textContent=n.fat.toFixed(1);
       const actionTd=document.createElement('td');
       const btn=document.createElement('button');
-      btn.className='del-btn';
+      btn.className='btn btn-danger del-btn';
       btn.dataset.name=encodeURIComponent(name);
-      btn.textContent='X';
+      btn.textContent='🗑 Delete';
       actionTd.appendChild(btn);
       tr.appendChild(nameTd);
       tr.appendChild(unitTd);
