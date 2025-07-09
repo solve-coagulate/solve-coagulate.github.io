@@ -12,5 +12,7 @@
 
 - Network access allowed; npm packages like jsdom can be installed (2025-07).
   DOM-based tests now use jsdom to load the diet tracker page (2025-07).
-- `package-lock.json` is intentionally not tracked. Install dependencies with
-  `npm install` or `npm ci`; the lock file is ignored (2025-07).
+- `package-lock.json` is tracked again. Use `npm ci` to install from the lock
+  file. Run `npm install` when adding packages to update the lock file (2025-07).
+- README explains how to install dependencies and run tests using the committed
+  lock file (2025-07).
