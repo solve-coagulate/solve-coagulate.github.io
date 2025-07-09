@@ -12,4 +12,6 @@ require('./renderDiaryTable.test');
 require('./escapeFoodName.test');
 require('./importExport.test');
 require('./domButton.test')();
+require('./domDiary.test')();
+require('./domSaveDay.test')();
 console.log('All tests passed');
