@@ -735,7 +735,7 @@
       const dates = [];
       const today = new Date();
       
-      for (let i = 13; i >= 0; i--) {
+      for (let i = 27; i >= 0; i--) {
         const d = new Date(today);
         d.setDate(today.getDate() - i);
         // Use local date formatting to avoid timezone issues
@@ -838,7 +838,7 @@
             },
             title: { 
               display: true, 
-              text: 'Workout Activity - Last 14 Days',
+              text: 'Workout Activity - Last 28 Days',
               font: { size: 16, weight: 'bold' },
               padding: 20
             }
