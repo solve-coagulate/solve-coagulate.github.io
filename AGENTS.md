@@ -7,5 +7,10 @@
 - Basic unit tests for the diet tracker live under
   `docs/webapps/diet-tracker/tests/` and can be run with `npm test` (2025-07).
 
+- A GitHub workflow `Diet Tracker Manual Tests` lets you trigger these
+  tests from the Actions tab; they don't run automatically on merge yet (2025-07).
+
 - Network access allowed; npm packages like jsdom can be installed (2025-07).
   DOM-based tests now use jsdom to load the diet tracker page (2025-07).
+- `package-lock.json` is intentionally not tracked. Install dependencies with
+  `npm install` or `npm ci`; the lock file is ignored (2025-07).

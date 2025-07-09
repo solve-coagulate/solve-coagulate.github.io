@@ -1,0 +1,13 @@
+node_modules/
+package-lock.json
+
+# Logs
+npm-debug.log*
+
+# Run test logs
+/tmp/test.log
+/tmp/ci.log
+
+# ignore root ephemeral logs
+*.log
+
