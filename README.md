@@ -12,6 +12,8 @@ https://solve-coagulate.github.io/
 
 Feel free to edit the HTML or styles to make the site your own!
 
+Small web apps are kept in the `docs/webapps/` folder. The site currently includes a diet tracker and an exercise tracker.
+
 ## Installing dependencies and running tests
 
 This repo commits `package-lock.json`. After cloning, install dependencies with
