@@ -31,7 +31,7 @@ npm install
 
 to update `package-lock.json` as needed.
 
-To execute all unit tests for the diet tracker, run:
+To execute all unit tests for the diet tracker and the exercise tracker, run:
 
 ```bash
 npm test

@@ -5,8 +5,10 @@
 - Microeconomics topics have individual HTML pages linked from the index (2025-06).
 - The `docs/webapps/` folder holds small apps. The diet tracker may include separate JS and CSS files and is linked from the site index (2025-06). The diet tracker currently uses `app.js` and `style.css` (2025-07).
 - The `exercise-tracker` app lives under `docs/webapps/exercise-tracker/` as a standalone HTML page (2025-07).
-- Basic unit tests for the diet tracker live under
-  `docs/webapps/diet-tracker/tests/` and can be run with `npm test` (2025-07).
+ - Basic unit tests for the diet tracker live under
+   `docs/webapps/diet-tracker/tests/` and can be run with `npm test` (2025-07).
+ - The exercise tracker now also has tests under
+   `docs/webapps/exercise-tracker/tests/` which run as part of `npm test` (2025-07).
 
 - A GitHub workflow `Diet Tracker Manual Tests` lets you trigger these
   tests from the Actions tab; they don't run automatically on merge yet (2025-07).
