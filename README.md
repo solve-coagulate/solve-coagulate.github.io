@@ -11,3 +11,26 @@ https://solve-coagulate.github.io/
 ```
 
 Feel free to edit the HTML or styles to make the site your own!
+
+## Installing dependencies and running tests
+
+This repo commits `package-lock.json`. After cloning, install dependencies with
+
+```bash
+npm ci
+```
+
+which uses the lock file to get exact versions. If you add or update packages,
+run
+
+```bash
+npm install
+```
+
+to update `package-lock.json` as needed.
+
+To execute all unit tests for the diet tracker, run:
+
+```bash
+npm test
+```
