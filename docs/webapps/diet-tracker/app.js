@@ -180,6 +180,9 @@ const importData = text => {
   localStorage.setItem('myappdata', JSON.stringify(currentFull));
 };
 
+let downloadDataFile = () => {};
+let handleFileUpload = () => Promise.reject(new Error('File API unavailable'));
+
 if (typeof document !== 'undefined') {
   // Use local timezone to get correct date
   const now = new Date();
@@ -203,6 +206,34 @@ if (typeof document !== 'undefined') {
     }, 2000);
   };
 
+  downloadDataFile = () => {
+    const data = exportData();
+    const blob = new Blob([data], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'diet-tracker-data.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  handleFileUpload = file => new Promise((resolve, reject) => {
+    if (!file) { reject(new Error('No file selected')); return; }
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        importData(reader.result);
+        resolve();
+      } catch (e) {
+        reject(e);
+      }
+    };
+    reader.onerror = () => reject(new Error('Failed to read file'));
+    reader.readAsText(file);
+  });
+
   window.DietTrackerExports = {
     computeTotals,
     updateMru,
@@ -214,7 +245,9 @@ if (typeof document !== 'undefined') {
     renderHistoryTable,
     loadDiary,
     exportData,
-    importData
+    importData,
+    downloadDataFile,
+    handleFileUpload
   };
 
   // Expose helpers directly for debugging in browser consoles
@@ -395,6 +428,26 @@ if (typeof document !== 'undefined') {
     showNotification('Data imported successfully! Reloading...');
     location.reload();
   });
+  // Download data file
+  $('downloadFileBtn')?.addEventListener('click', () => {
+    downloadDataFile();
+    showNotification('Data file downloaded');
+  });
+  // Upload data file
+  $('uploadFileBtn')?.addEventListener('click', () => {
+    $('dataFileInput').click();
+  });
+  $('dataFileInput')?.addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    try {
+      await handleFileUpload(file);
+    } catch(err) {
+      showNotification(err.message);
+      return;
+    }
+    showNotification('Data imported successfully! Reloading...');
+    location.reload();
+  });
 }
 
 if (typeof module !== 'undefined' && module.exports) {
@@ -410,6 +463,8 @@ if (typeof module !== 'undefined' && module.exports) {
     renderHistoryTable,
     exportData,
     importData,
+    downloadDataFile,
+    handleFileUpload,
     parseUnitNumber,
     foodDB,
     history,

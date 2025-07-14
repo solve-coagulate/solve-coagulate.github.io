@@ -8,3 +8,5 @@
   numeric value from a food's unit string. This keeps amounts like `"1 cup (250g)"`
   scaled using the cup measure, not the grams.
 - If a food entry lacks a `unit`, it now defaults to `'100g'` on app load (2025-07).
+- The Data tab includes buttons to download or upload JSON files (2025-07).
+- DOM tests cover the download/upload helpers (2025-07).
