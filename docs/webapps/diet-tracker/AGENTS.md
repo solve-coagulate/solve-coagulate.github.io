@@ -10,3 +10,4 @@
 - If a food entry lacks a `unit`, it now defaults to `'100g'` on app load (2025-07).
 - The Data tab includes buttons to download or upload JSON files (2025-07).
 - DOM tests cover the download/upload helpers (2025-07).
+- A helper adds foods from JSON pasted into the Data tab (2025-07).

@@ -180,6 +180,32 @@ const importData = text => {
   localStorage.setItem('myappdata', JSON.stringify(currentFull));
 };
 
+const addFoodsFromJson = text => {
+  if (!text) throw new Error('No data to import');
+  let foods;
+  try {
+    foods = JSON.parse(text);
+  } catch (e) {
+    throw new Error('Invalid JSON format');
+  }
+  if (typeof foods !== 'object' || foods === null || Array.isArray(foods)) {
+    throw new Error('Invalid food data');
+  }
+  Object.entries(foods).forEach(([name, info]) => {
+    if (info && typeof info === 'object') {
+      foodDB[name] = {
+        unit: info.unit || '100g',
+        kj: parseFloat(info.kj) || 0,
+        protein: parseFloat(info.protein) || 0,
+        carbs: parseFloat(info.carbs) || 0,
+        fat: parseFloat(info.fat) || 0
+      };
+    }
+  });
+  persist();
+  return Object.keys(foods);
+};
+
 let downloadDataFile = () => {};
 let handleFileUpload = () => Promise.reject(new Error('File API unavailable'));
 
@@ -246,6 +272,7 @@ if (typeof document !== 'undefined') {
     loadDiary,
     exportData,
     importData,
+    addFoodsFromJson,
     downloadDataFile,
     handleFileUpload
   };
@@ -428,6 +455,20 @@ if (typeof document !== 'undefined') {
     showNotification('Data imported successfully! Reloading...');
     location.reload();
   });
+  // Import foods button
+  $('importFoodBtn')?.addEventListener('click', () => {
+    const text = $('dataBox').value.trim();
+    let names;
+    try {
+      names = addFoodsFromJson(text);
+    } catch (e) {
+      showNotification(e.message);
+      return;
+    }
+    renderFoodTable();
+    updateDatalist();
+    showNotification(`Imported ${names.length} foods`);
+  });
   // Download data file
   $('downloadFileBtn')?.addEventListener('click', () => {
     downloadDataFile();
@@ -463,6 +504,7 @@ if (typeof module !== 'undefined' && module.exports) {
     renderHistoryTable,
     exportData,
     importData,
+    addFoodsFromJson,
     downloadDataFile,
     handleFileUpload,
     parseUnitNumber,
