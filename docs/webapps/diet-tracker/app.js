@@ -180,6 +180,30 @@ const importData = text => {
   localStorage.setItem('myappdata', JSON.stringify(currentFull));
 };
 
+const addFoodsFromJson = text => {
+  if (!text) throw new Error('No data to import');
+  let parsed;
+  try {
+    parsed = JSON.parse(text);
+  } catch (e) {
+    throw new Error('Invalid JSON format');
+  }
+  const foods = parsed.foodDB || parsed;
+  if (typeof foods !== 'object') throw new Error('Invalid food data');
+  Object.entries(foods).forEach(([name, f]) => {
+    if (f && typeof f === 'object') {
+      foodDB[name] = {
+        unit: f.unit || '100g',
+        kj: parseFloat(f.kj) || 0,
+        protein: parseFloat(f.protein) || 0,
+        carbs: parseFloat(f.carbs) || 0,
+        fat: parseFloat(f.fat) || 0
+      };
+    }
+  });
+  persist();
+};
+
 if (typeof document !== 'undefined') {
   // Use local timezone to get correct date
   const now = new Date();
@@ -214,7 +238,8 @@ if (typeof document !== 'undefined') {
     renderHistoryTable,
     loadDiary,
     exportData,
-    importData
+    importData,
+    addFoodsFromJson
   };
 
   // Expose helpers directly for debugging in browser consoles
@@ -395,6 +420,19 @@ if (typeof document !== 'undefined') {
     showNotification('Data imported successfully! Reloading...');
     location.reload();
   });
+  // Add foods from JSON button
+  $('addFoodsBtn')?.addEventListener('click', () => {
+    const text = $('dataBox').value.trim();
+    try {
+      addFoodsFromJson(text);
+    } catch(e) {
+      showNotification(e.message);
+      return;
+    }
+    renderFoodTable();
+    updateDatalist();
+    showNotification('Foods added to database');
+  });
 }
 
 if (typeof module !== 'undefined' && module.exports) {
@@ -410,6 +448,7 @@ if (typeof module !== 'undefined' && module.exports) {
     renderHistoryTable,
     exportData,
     importData,
+    addFoodsFromJson,
     parseUnitNumber,
     foodDB,
     history,

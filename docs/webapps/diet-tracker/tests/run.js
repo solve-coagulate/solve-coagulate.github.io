@@ -11,6 +11,7 @@ require('./renderTotals.test');
 require('./renderDiaryTable.test');
 require('./escapeFoodName.test');
 require('./importExport.test');
+require('./addFoodsFromJson.test');
 require('./domButton.test')();
 require('./domDiary.test')();
 require('./domSaveDay.test')();
