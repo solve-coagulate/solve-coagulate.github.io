@@ -12,10 +12,12 @@ const run = async () => {
   require('./renderDiaryTable.test');
   require('./escapeFoodName.test');
   require('./importExport.test');
+  require('./importFoods.test');
   await require('./domButton.test')();
   await require('./domDiary.test')();
   await require('./domSaveDay.test')();
   await require('./domFileTransfer.test')();
+  await require('./domImportFoods.test')();
   console.log('All tests passed');
 };
 

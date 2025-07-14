@@ -5,3 +5,4 @@
 - Review history of saved days and track progress over time.
 - Import or export data to share between devices.
 - Download your data as a JSON file and upload it on another device.
+- Paste JSON food data into the Data tab to quickly add multiple foods.
